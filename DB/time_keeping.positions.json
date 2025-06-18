@@ -1,0 +1,76 @@
+[{
+  "_id": {
+    "$oid": "684d311d4984a945a13ebb84"
+  },
+  "name": "Lập trình viên 1",
+  "department": {
+    "$oid": "684d2fb94984a945a13ebb76"
+  },
+  "userId": {
+    "$oid": "684d2792a1eaeb98e513680b"
+  },
+  "createdAt": {
+    "$date": "2025-06-14T08:21:49.607Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-14T08:27:03.145Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "684d9c518343f58eefd9fc42"
+  },
+  "name": "Quản lý",
+  "department": {
+    "$oid": "684d99718343f58eefd756be"
+  },
+  "userId": {
+    "$oid": "684d2792a1eaeb98e513680b"
+  },
+  "createdAt": {
+    "$date": "2025-06-14T15:59:13.859Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-14T15:59:13.859Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "684da1006edd448c326be704"
+  },
+  "name": "Quản lý 1",
+  "department": {
+    "$oid": "684da0ed6edd448c326be6f8"
+  },
+  "userId": {
+    "$oid": "684d9f93538fe03d07328207"
+  },
+  "createdAt": {
+    "$date": "2025-06-14T16:19:12.332Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-14T16:19:12.332Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "684da1086edd448c326be70e"
+  },
+  "name": "Quản lý 2",
+  "department": {
+    "$oid": "684da0f76edd448c326be6fd"
+  },
+  "userId": {
+    "$oid": "684d9f93538fe03d07328207"
+  },
+  "createdAt": {
+    "$date": "2025-06-14T16:19:20.914Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-14T16:19:20.914Z"
+  },
+  "__v": 0
+}]

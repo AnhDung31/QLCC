@@ -1,0 +1,42 @@
+[{
+  "_id": {
+    "$oid": "685043737c3e4bfb2f1d92db"
+  },
+  "deviceId": "DEV604899149",
+  "name": "Device 5",
+  "createdAt": {
+    "$date": "2025-06-16T16:16:51.019Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-16T16:46:50.291Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "685044757c3e4bfb2f1d92e7"
+  },
+  "deviceId": "DEV864937827",
+  "name": "Device 2",
+  "createdAt": {
+    "$date": "2025-06-16T16:21:09.677Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-16T16:21:09.677Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6850451f88ebdf7c5a042b52"
+  },
+  "deviceId": "DEV033198330",
+  "name": "Device 3",
+  "createdAt": {
+    "$date": "2025-06-16T16:23:59.254Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-16T16:23:59.254Z"
+  },
+  "__v": 0
+}]
