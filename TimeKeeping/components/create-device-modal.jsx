@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react"
 export function CreateDeviceModal({ isOpen, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false)
   const [deviceData, setDeviceData] = useState({
+    deviceId: "",
     name: "",
     type: "",
     location: "",
@@ -42,6 +43,16 @@ export function CreateDeviceModal({ isOpen, onClose, onSuccess }) {
           <DialogTitle>Thêm thiết bị mới</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="deviceId">Mã thiết bị</Label>
+            <Input
+              id="deviceId"
+              value={deviceData.deviceId}
+              onChange={e => setDeviceData(prev => ({ ...prev, deviceId: e.target.value }))}
+              placeholder="Nhập mã thiết bị"
+              required
+            />
+          </div>
           <div className="space-y-2">
             <Label htmlFor="name">Tên thiết bị</Label>
             <Input

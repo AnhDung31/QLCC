@@ -95,16 +95,10 @@ export function DeviceManagement() {
     }
   }
 
-  const generateDeviceCode = () => {
-    const timestamp = Date.now().toString()
-    const randomNum = Math.floor(Math.random() * 1000).toString().padStart(3, '0')
-    return `DEV${timestamp.slice(-6)}${randomNum}`
-  }
-
   const handleOpenAddDialog = () => {
     setNewDevice({
       name: "",
-      code: generateDeviceCode()
+      code: ""
     })
     setShowAddDialog(true)
   }
@@ -203,7 +197,8 @@ export function DeviceManagement() {
     try {
       setIsUpdating(true)
       const updatedDevice = await updateDevice(editingDevice.deviceId, {
-        name: editingDevice.name.trim()
+        name: editingDevice.name.trim(),
+        deviceId: editingDevice.deviceId
       })
 
       // Update devices list
@@ -324,9 +319,10 @@ export function DeviceManagement() {
                   <Input
                     id="deviceCode"
                     className="col-span-3"
-                    placeholder="Mã thiết bị sẽ được tự động tạo"
+                    placeholder="Nhập mã thiết bị"
                     value={newDevice.code}
-                    disabled={true}
+                    onChange={e => setNewDevice({ ...newDevice, code: e.target.value })}
+                    disabled={false}
                   />
                 </div>
                 <div className="grid grid-cols-4 items-center gap-4">
@@ -378,6 +374,16 @@ export function DeviceManagement() {
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="editDeviceId" className="text-right">Mã Thiết Bị</Label>
+              <Input
+                id="editDeviceId"
+                className="col-span-3"
+                placeholder="Nhập mã thiết bị"
+                value={editingDevice?.deviceId || ""}
+                onChange={e => setEditingDevice(prev => ({ ...prev, deviceId: e.target.value }))}
+              />
+            </div>
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="editDeviceName" className="text-right">
                 Tên Thiết Bị

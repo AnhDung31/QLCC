@@ -80,7 +80,8 @@ export function RealtimeCheckinTable() {
       if (!data || typeof data !== 'object') return
 
       try {
-        // Kiểm tra quyền thiết bị nếu là admin thường
+        // // Kiểm tra quyền thiết bị nếu là admin thường
+        console.log(user)
         if (user?.role === 'admin' && !user?.devices?.includes(data.deviceId)) {
           console.warn(`Thiết bị ${data.deviceId} không thuộc quyền quản lý của admin này`)
           return
@@ -94,6 +95,8 @@ export function RealtimeCheckinTable() {
           console.error('Invalid date:', data.checkinTime || data.timestamp)
           return
         }
+
+        const vnTimestamp = data.timestamp ? new Date(data.timestamp).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }) : "";
 
         const newCheckin = {
           id: String(data.employeeId || ''),

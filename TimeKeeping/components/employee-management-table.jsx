@@ -256,7 +256,7 @@ export function EmployeeManagementTable() {
                         "-"
                       )}
                     </TableCell>
-                    <TableCell>{employee.registrationDate || "-"}</TableCell>
+                    <TableCell>{employee.registrationDate ? new Date(employee.registrationDate).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }) : "-"}</TableCell>
                     <TableCell>
                       <div className="flex space-x-2">
                         {/* Nút sửa thông tin nhân viên */}

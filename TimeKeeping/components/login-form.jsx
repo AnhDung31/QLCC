@@ -148,15 +148,7 @@ export function LoginForm() {
             )}
           </Button>
         </form>
-        <div className="mt-4 text-center text-sm text-gray-600">
-          <p>Thông tin đăng nhập demo:</p>
-          <p>
-            Tên đăng nhập: <strong>admin</strong>
-          </p>
-          <p>
-            Mật khẩu: <strong>admin123</strong>
-          </p>
-        </div>
+       
       </CardContent>
     </Card>
   )

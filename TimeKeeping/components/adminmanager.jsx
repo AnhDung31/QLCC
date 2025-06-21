@@ -62,7 +62,7 @@ export function AdminManagementTable() {
       "Họ Tên": user.username,
       "Email": "-",
       "Vai Trò": user.role,
-      "Thời Gian Đăng Ký": format(new Date(user.createdAt), "dd/MM/yyyy HH:mm", { locale: vi }),
+      "Thời Gian Đăng Ký": new Date(user.createdAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" }),
     }))
   }
 
@@ -188,7 +188,7 @@ export function AdminManagementTable() {
                         </Avatar>
                       </TableCell>
                       <TableCell>
-                        {format(new Date(user.createdAt), "dd/MM/yyyy HH:mm", { locale: vi })}
+                        {new Date(user.createdAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })}
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">

@@ -43,13 +43,7 @@ const mqttService = new MQTTService(io);
 const socketController = new SocketController(io);
 
 // Use routes
-app.use('/api/employees', employeeRoutes);
-app.use('/api/positions', positionRoutes);
-app.use('/api/departments', departmentRoutes);
-app.use('/api/checkins', checkinRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/devices', deviceRoutes);
-app.use('/api/auth', authRoutes);
+
 
 // Connect to MQTT broker
 mqttService.connect();
@@ -58,12 +52,12 @@ mqttService.connect();
 socketController.initialize();
 
 // Port mà Socket.IO server sẽ lắng nghe
-const SOCKET_IO_PORT = process.env.PORT || 3002;
+const SOCKET_IO_PORT = process.env.SOCKET_IO_PORT || 3002;
 
 // Start the HTTP server (which Socket.IO is bound to) on port 3002
 server.listen(SOCKET_IO_PORT, () => {
   console.log(`Socket.IO server is listening on port ${SOCKET_IO_PORT}`);
 });
-
+require("./server");
 // Export the Socket.IO instance if needed in other modules (like mqtt.service.js)
 module.exports = { app, server, io }; 

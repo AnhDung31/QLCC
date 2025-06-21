@@ -98,10 +98,7 @@ const AssignPermissions = () => {
         .filter(([_, isSelected]) => isSelected)
         .map(([deviceId]) => deviceId)
 
-      if (selectedDeviceIds.length === 0) {
-        toast.warning('Vui lòng chọn ít nhất một thiết bị')
-        return
-      }
+      
 
       // Call API to assign devices
       await assignDevicesToAdmin(selectedAdminId, selectedDeviceIds)

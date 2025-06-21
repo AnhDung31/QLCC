@@ -14,6 +14,7 @@ export function useAuth() {
   useEffect(() => {
     const fetchUser = async () => {
       const user = getUserData()
+      console.log("user", user)
       if (!user) {
         setUser(null)
         setIsLoading(false)

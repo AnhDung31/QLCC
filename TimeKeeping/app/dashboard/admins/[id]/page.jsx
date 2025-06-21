@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Pencil } from "lucide-react"
-import { getAdminUserById } from "@/lib/api"
+import  getAdminUserById  from "@/lib/api"
 import { UpdateAdminModal } from "@/components/update-admin-modal"
 import { toast } from "sonner"
 
@@ -99,25 +99,13 @@ export default function AdminDetailPage() {
             <div className="grid gap-2">
               <div className="text-sm text-muted-foreground">Ngày tạo</div>
               <div className="font-medium">
-                {new Date(admin.createdAt).toLocaleDateString("vi-VN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit"
-                })}
+                {new Date(admin.createdAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
               </div>
             </div>
             <div className="grid gap-2">
               <div className="text-sm text-muted-foreground">Cập nhật lần cuối</div>
               <div className="font-medium">
-                {new Date(admin.updatedAt).toLocaleDateString("vi-VN", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                  hour: "2-digit",
-                  minute: "2-digit"
-                })}
+                {new Date(admin.updatedAt).toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
               </div>
             </div>
           </CardContent>
