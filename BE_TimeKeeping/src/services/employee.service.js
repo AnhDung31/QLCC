@@ -68,11 +68,7 @@ const employeeService = {
       const employee = await Employee.findOne({ employeeId: employeeIdString })
         .populate('department', 'name')
         .populate('position', 'name');
-      console.log("deviceID = ", deviceID);
-      console.log("employeeIdString = ", employeeIdString);
-      console.log("timestamp = ", timestamp);
-      console.log("faceId = ", faceId);
-      console.log("checkinStatus = ", checkinStatus);
+      
       const newCheckin = new Checkin({
         deviceId: deviceID,
         employeeId: employeeIdString,

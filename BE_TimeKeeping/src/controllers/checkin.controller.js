@@ -7,7 +7,6 @@ const getCheckinHistory = async (req, res) => {
   try {
     const { employeeId, shift, month, year } = req.query;
     
-    console.log(employeeId, month, year);
     if (!employeeId || !month || !year) {
       return res.status(400).json({
         success: false,
@@ -29,12 +28,10 @@ const getCheckinHistory = async (req, res) => {
       const date = formatDateCustom(checkin.timestamp)
       const key = `${checkin.employeeId}_${date}`;
       if (!mapEmployeeCheckins.has(key)) {
-        console.log("key = ", key);
         mapEmployeeCheckins.set(key, []);
       }
       mapEmployeeCheckins.get(key).push(checkin);
     });
-    console.log("mapEmployeeCheckins = ", mapEmployeeCheckins);
 
     // Initialize daily records for all days in the month
     const dailyRecords = {};
@@ -66,7 +63,6 @@ const getCheckinHistory = async (req, res) => {
       currentDate.add(1, 'day');
     }
 
-    console.log(dailyRecords);
 
     // Convert dailyRecords object to array
     const dailyRecordsArray = Object.values(dailyRecords);
@@ -157,7 +153,6 @@ const getCheckinHistory = async (req, res) => {
           
           if(shift === 'Cả ngày'){
             if(checkoutTime > fullHomeTime){
-              console.log("checkoutTime > fullHomeTime = ", checkoutTime - fullHomeTime);
               record.overtime = Math.abs(checkoutTime - fullHomeTime) /(1000 * 60 * 60);
             }else {
               record.overtime = 0;
@@ -220,7 +215,6 @@ const getAllCheckinsToday = async (req, res) => {
       }
     }).sort({ timestamp: -1 });
 
-    console.log("checkins = ", checkins);
     let employeeIds = [];
 
     // Group check-ins by employee
@@ -266,7 +260,6 @@ const getAllCheckinsToday = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error getting today\'s check-ins:', error);
     res.status(500).json({
       success: false,
       message: 'Internal server error',

@@ -7,16 +7,13 @@ const authController = {
   login: async (req, res) => {
     try {
       const { username, password } = req.body;
-      console.log("req.body = ", req.body);
       // Find user by username
       const user = await authService.findUserByUsername(username);
       if (!user) {
           return res.status(400).json({ message: 'Invalid credentials' });
       }
-      console.log("user = ", user);
       // Compare provided password with hashed password in database
       const isMatch = await authService.comparePassword(password, user.password);
-      console.log("isMatch = ", isMatch);
       if (!isMatch) {
           return res.status(400).json({ message: 'Invalid credentials' });
       }

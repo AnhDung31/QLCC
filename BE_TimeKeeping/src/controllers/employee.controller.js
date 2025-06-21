@@ -9,10 +9,8 @@ const User = require('../models/user.model');
 
 const employeeController = {
   registerEmployee: async (req, res) => {
-    console.log("req.body = ", req.body);
     try {
       const employeeData = req.body;
-      console.log("employeeData = ", employeeData);
       // Validate required fields
       if (!employeeData.employeeId || !employeeData.fullName || !employeeData.email || !employeeData.phone) {
         return res.status(400).json({
@@ -60,7 +58,6 @@ const employeeController = {
         data: newEmployee
       });
     } catch (error) {
-      console.error('Error in registerEmployee:', error);
       return res.status(500).json({
         status: 500,
         message: error.message,
@@ -122,7 +119,6 @@ const employeeController = {
         data: updatedEmployee
       });
     } catch (error) {
-      console.error('Error in updateEmployee:', error);
       return res.status(500).json({
         status: 500,
         message: error.message,
@@ -276,26 +272,10 @@ const employeeController = {
       const [hours, minutes, seconds] = time.split(":").map(Number);
       const timestampData =  new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
 
-      console.log("timestampData = ", timestampData);
 
       // Authorization for admin users coming from MQTT (for check-in)
-      if (processedData.userId) { // userId is passed from mqtt.service if an admin manages the device
-          const managingUser = await User.findById(processedData.userId);
-
-          if (managingUser && managingUser.role === 'admin') {
-              const employeeCheckingIn = await employeeService.getEmployeeByEmployeeIdString(processedData.data.employeeId);
-              if (employeeCheckingIn.data) {
-                  const isAllowedByDevice = employeeCheckingIn.data.deviceId && managingUser.devices.includes(employeeCheckingIn.data.deviceId);
-                  if (!isAllowedByDevice) {
-                      console.warn(`MQTT Check-in: Admin user ${managingUser.username} does not have access to deviceId: ${employeeCheckingIn.data.deviceId}. Check-in ignored.`);
-                      return { status: 403, message: 'Forbidden: Admin does not have permission to check-in via this device.' };
-                  }
-              } else {
-                  console.warn(`MQTT Check-in: Employee ${processedData.data.employeeId} not found for authorization check. Proceeding with check-in without specific employee device auth.`);
-              }
-          }
-      }
-
+      const employee = await employeeService.getEmployeeByEmployeeId(processedData.data.employeeId);
+      
       const checkinRecord = await employeeService.recordCheckin(
         processedData.data.deviceId,
         processedData.data.employeeId,
@@ -304,7 +284,17 @@ const employeeController = {
         processedData.data.status || "checkin",
         processedData.userId // Pass userId to service for context or future use
       );
-      console.log('Check-in record created:', checkinRecord);
+      const resultSendBySocket = {
+         id: employee._id,
+        employeeId: employee.employeeId,
+        fullName: employee.fullName,
+        department: employee.department ? employee.department.name : '',
+        position: employee.position ? employee.position.name : '',
+        faceImage: employee.faceImage,
+        checkIn: processedData.data.timestamp,
+      }
+      const {io} = require('../index');
+        io.emit("checkin", resultSendBySocket);    
       return {
         status: 201,
         data: checkinRecord,

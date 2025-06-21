@@ -16,6 +16,7 @@ import { Search } from "lucide-react"
 import socket from "@/lib/socket"
 import api from "@/lib/api"
 import { useAuth } from "@/hooks/use-auth"
+import { useToast } from "@/hooks/use-toast"
 
 export function RealtimeCheckinTable() {
   const {departments, employees } = useEmployees()
@@ -24,10 +25,25 @@ export function RealtimeCheckinTable() {
   const [departmentFilter, setDepartmentFilter] = useState("all")
   const [recentCheckins, setRecentCheckins] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [retake,setRetake] = useState(0);
+  const { toast } = useToast()
 
   // Lấy danh sách phòng ban duy nhất từ dữ liệu nhân viên
 
   // Fetch dữ liệu check-in khi component mount
+  useEffect(() => {
+    socket.on('refresh', (data) => {
+      console.log('🔄 Nhận refresh:', data);
+      setRetake(retake=>retake+1);
+      toast(data);
+
+      // gọi API hoặc reload dữ liệu tại đây
+    });
+
+    return () => {
+      socket.off('refresh');
+    };
+  }, []);
   useEffect(() => {
     const formatTime = (time) => {
       const hours = time.getHours().toString().padStart(2, '0')
@@ -72,13 +88,14 @@ export function RealtimeCheckinTable() {
     }
 
     fetchTodayCheckins()
-  }, [])
+  }, [retake])
 
   // Xử lý sự kiện check-in realtime
   useEffect(() => {
     const handleCheckin = (data) => {
+      console.log(data)
       if (!data || typeof data !== 'object') return
-
+      
       try {
         // // Kiểm tra quyền thiết bị nếu là admin thường
         console.log(user)
@@ -87,9 +104,8 @@ export function RealtimeCheckinTable() {
           return
         }
 
-        const checkinTime = data.checkinTime ? new Date(data.checkinTime) : 
-                          data.timestamp ? new Date(data.timestamp) : 
-                          new Date()
+        const checkinTime = data.checkIn ? new Date(data.checkIn):new Date()
+
 
         if (isNaN(checkinTime.getTime())) {
           console.error('Invalid date:', data.checkinTime || data.timestamp)
@@ -110,6 +126,7 @@ export function RealtimeCheckinTable() {
             minute: '2-digit'
           })
         }
+          toast({data})
 
         setRecentCheckins((prev) => [newCheckin, ...prev.slice(0, 19)])
       } catch (error) {

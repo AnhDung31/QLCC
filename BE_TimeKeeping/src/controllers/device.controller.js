@@ -53,7 +53,6 @@ const deviceController = {
   createDevice: async (req, res) => {
     try {
       const deviceData = { deviceId : req.body.code , name : req.body.name, userId: req.user._id };
-      console.log("deviceData = ", deviceData);
       const newDevice = await deviceService.createDevice(deviceData);
       
       return res.status(201).json({

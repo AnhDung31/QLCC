@@ -11,7 +11,6 @@ const auth = async (req, res, next) => {
             throw new Error();
         }
 
-        console.log("VAO DAY");
         
         req.token = token;
         req.user = user;
@@ -25,7 +24,6 @@ const auth = async (req, res, next) => {
 };
 
 const requireSuperAdmin = (req, res, next) => {
-    console.log("req.user.role = ",req.user.role );
     
     if (req.user.role !== 'superadmin') {
         return res.status(403).json({ message: 'Forbidden: Superadmin access required.' });

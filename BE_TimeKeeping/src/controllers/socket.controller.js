@@ -12,6 +12,9 @@ class SocketController {
       });
     });
   }
+  getIO() {
+    return this.io;
+  }
 }
 
 module.exports = SocketController; 

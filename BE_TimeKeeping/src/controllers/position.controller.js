@@ -6,7 +6,6 @@ const positionController = {
   createPosition: async (req, res) => {
     try {
       const positionData = req.body;
-      console.log(JSON.stringify(positionData));
       if (!positionData.name) {
         return res.status(400).json({
           status: 400,

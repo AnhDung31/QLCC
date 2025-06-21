@@ -11,7 +11,6 @@ const getAllUsers = async (req, res) => {
             data: users
         });
     } catch (error) {
-        console.error('Error in getAllUsers:', error);
         return res.status(500).json({
             status: 500,
             message: error.message,
@@ -23,10 +22,8 @@ const getAllUsers = async (req, res) => {
 const getUserById = async (req, res) => {
     try {
         const { id } = req.params;
-        console.log("Getting user by ID:", id);
 
         const user = await userService.getUserById(id);
-        console.log("Found user:", user);
 
         if (!user) {
             return res.status(404).json({
@@ -47,7 +44,6 @@ const getUserById = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error in getUserById:', error);
         return res.status(500).json({
             status: 500,
             message: error.message,
@@ -59,7 +55,6 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
     try {
         const { username, password, role, devices } = req.body;
-        console.log("req.body = ", req.body);
 
         // Check if user already exists
         const existingUser = await userService.getUserByUsername(username);
@@ -76,7 +71,6 @@ const createUser = async (req, res) => {
             role,
             devices: role === 'admin' ? (devices || []) : [] // Only assign devices if role is admin
         });
-        console.log("newUser = ", newUser)
         res.status(201).json(newUser);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -122,7 +116,6 @@ const deleteUser = async (req, res) => {
 
 const assignDevices = async (req, res) => {
     try {
-        console.log("Assign devices request body:", req.body);
         const { adminId, deviceIds } = req.body;
 
         if (!adminId || !deviceIds || !Array.isArray(deviceIds)) {
@@ -134,9 +127,7 @@ const assignDevices = async (req, res) => {
             });
         }
 
-        console.log("Calling userService.assignDevices with:", { adminId, deviceIds });
         const updatedAdmin = await userService.assignDevices(adminId, deviceIds);
-        console.log("Updated admin result:", updatedAdmin);
         
         return res.status(200).json({
             status: 200,
@@ -149,7 +140,6 @@ const assignDevices = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error in assignDevices:', error);
         
         if (error.message.includes('Invalid admin ID format')) {
             return res.status(400).json({

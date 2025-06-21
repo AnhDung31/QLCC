@@ -61,7 +61,6 @@ const departmentController = {
   createDepartment: async (req, res) => {
     try {
       const departmentData = { ...req.body, userId: req.user._id };
-      console.log("departmentData = ", departmentData);
       
       const newDepartment = await departmentService.createDepartment(departmentData);
       return res.status(201).json({
