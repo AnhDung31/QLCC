@@ -47,155 +47,63 @@ class MQTTService {
     try {
       const messageString = message.toString();
       const eventData = JSON.parse(messageString);
+      const { cmd } = eventData;
 
-      const processedData = await employeeController.processDeviceEventData(eventData);
-      console.log("processedData = ", processedData);
-      // Kiểm tra null trước khi truy cập thuộc tính status
-      if (!processedData.data) {
-        console.error('processedData.data is null:', processedData);
+      if (!cmd) {
+        console.error('Missing cmd in message:', eventData);
         return;
       }
-      switch (processedData.data.status) {
-        case 'đăng ký':
-          // Chuẩn bị dữ liệu đăng ký
-          let registrationDate = "";
-          if(processedData.data.timestamp){
-            const [date, time] = processedData.data.timestamp.split(" ");
-            const [year, month, day] = date.split("-").map(Number);
-            const [hours, minutes, seconds] = time.split(":").map(Number);
-            registrationDate =  new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds));
-          }else {
-            registrationDate = new Date().toISOString();
+
+      if (cmd === 'log') {
+        // Checkin
+        const processedData = {
+          data: {
+            deviceId: eventData.deviceId,
+            employeeId: eventData.employeeId,
+            employeeName: eventData.employeeName,
+            timestamp: eventData.timestamp,
+            faceBase64: eventData.faceBase64,
+            status: 'checkin',
           }
-          console.log("registrationDate =", registrationDate);
-          const registrationData = {
-            ...processedData.data, 
-            employeeType: processedData.data.employeeType,
-            registrationDate: registrationDate
-          };
-
-          // Xử lý đăng ký thông qua controller
-          employeeController.handleRegistrationSave(registrationData)
-            .then(result => {
-              console.log('MQTT: Employee registration successful:', result);
-              // Thông báo cho frontend
-              if (this.io) {
-                this.io.emit('employee_added', {
-                  ...result.data,
-                  employeeType: registrationData.employeeType,
-                  registrationDate: registrationData.registrationDate
-                });
-              }
-            })
-            .catch(error => {
-              console.error('Error in employee registration:', error);
-              // Thông báo lỗi cho frontend nếu cần
-              if (this.io) {
-                this.io.emit('registration_error', {
-                  error: error.message,
-                  employeeId: registrationData.employeeId
-                });
-              }
-            });
-          break;
-
-        case 'cập nhật':
-          // Chuẩn bị dữ liệu cập nhật
-          const updateData = {
-            employeeId: processedData.data.employeeId,
-            fullName: processedData.data.employeeName,
-            faceEmbedding: processedData.data.faceEmbedding,
-            faceBase64 : processedData.data.faceBase64,
-           
-          };
-
-          // Xử lý cập nhật thông qua controller
-          employeeController.handleUpdateSave(updateData)
-            .then(result => {
-              console.log('MQTT: Employee update successful:', result);
-              // Thông báo cho frontend
-              if (this.io) {
-                this.io.emit('employee_updated', {
-                  ...result.data,
-                  employeeType: updateData.employeeType,
-                  updateDate: updateData.updateDate
-                });
-              }
-            })
-            .catch(error => {
-              console.error('Error in employee update:', error);
-              // Thông báo lỗi cho frontend
-              if (this.io) {
-                this.io.emit('update_error', {
-                  error: error.message,
-                  employeeId: updateData.employeeId
-                });
-              }
-            });
-          break;
-
-        case 'checkin':
-          // Luồng 1 (Async): Lưu bản ghi check-in vào database
-          employeeController.handleCheckinSave(processedData)
-            .then(checkinRecord => console.log('Check-in record saved successfully:', checkinRecord))
-            .catch(error => console.error('Error saving check-in record:', error));
-          break;
-
-        default:
-          console.error('MQTT: Unexpected status after processing:', processedData.status);
+        };
+        await employeeController.handleCheckinSave(processedData);
+        return;
       }
 
-      // Luồng 2 (Async): Lấy thông tin employee và gửi lên frontend
-      (async () => {
-        try {
-          // Sử dụng processedData.employeeId string để tìm employee
-          const employee = await employeeService.getEmployeeByEmployeeIdString(processedData.data.employeeId);
-          if (employee.data) {
-            const frontendData = {
-              userId: employee.data.userId,
-              deviceId: employee.data.deviceId,
-              employeeId: employee.data.employeeId,
-              fullName: employee.data.fullName,
-              position: employee.data.position.name,
-              department: employee.data.department.name,
-              employeeType: employee.data.employeeType,
-              status: processedData.data.status,
-              timestamp: processedData.data.timestamp
-            };
-            // Gửi thông tin lên frontend qua Socket.IO
-            if (this.io) {
-              this.io.emit('checkin', frontendData);
-              console.log('Sent check-in data to frontend:', frontendData);
-            } else {
-              console.log('Socket.IO instance not available, cannot emit checkin data.');
-            }
-
-          } else {
-            // console.log(`Employee with employeeId ${processedData.employeeId} not found for frontend update.`);
-            // for testing 
-            const frontendData = {
-              userId: processedData.data.userId,
-              deviceId: processedData.data.deviceId,
-              employeeId: processedData.data.employeeId,
-              fullName: processedData.data.employeeName,
-              position: "Người ngoài công ty",
-              department: "Người ngoài công ty",
-              employeeType: "unknown",
-              status: processedData.data.status,
-              timestamp: processedData.data.timestamp,
-            };
-            // Gửi thông tin lên frontend qua Socket.IO
-            if (this.io) {
-              this.io.emit('checkin', frontendData);
-              console.log('Sent check-in data to frontend:', frontendData);
-            } else {
-              console.log('Socket.IO instance not available, cannot emit checkin data.');
-            }
-          }
-        } catch (error) {
-          console.log('MQTT Service - Error in frontend emission flow:', error);
+      if (cmd === 'add_employee') {
+        // Thêm hoặc cập nhật nhân viên
+        const registrationData = {
+          employeeId: eventData.employeeId,
+          employeeName: eventData.employeeName,
+          deviceId: eventData.deviceId,
+          faceEmbedding: eventData.faceEmbedding,
+          faceBase64: eventData.faceBase64,
+          registrationDate: eventData.timestamp,
+        };
+        // Kiểm tra nếu đã tồn tại thì cập nhật, chưa có thì thêm mới
+        const existing = await employeeController.getEmployeeById({ params: { employeeId: eventData.employeeId } }, { json: () => {} });
+        if (existing && existing.data) {
+          // Cập nhật
+          await employeeController.handleUpdateSave({
+            employeeId: eventData.employeeId,
+            fullName: eventData.employeeName,
+            faceEmbedding: eventData.faceEmbedding,
+            faceBase64: eventData.faceBase64,
+          });
+        } else {
+          // Thêm mới
+          await employeeController.handleRegistrationSave(registrationData);
         }
-      })();
+        return;
+      }
+
+      if (cmd === 'delete_employee') {
+        // Xóa nhân viên
+        await employeeController.deleteEmployee({ params: { employeeId: eventData.employeeId }, user: { role: 'superadmin' } }, { json: () => {} });
+        return;
+      }
+
+      console.error('Unknown cmd:', cmd);
     } catch (error) {
       console.error('MQTT Service - Error processing message (parsing or initial processing):', error);
     }

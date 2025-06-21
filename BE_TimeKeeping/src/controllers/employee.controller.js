@@ -52,7 +52,7 @@ const employeeController = {
         });
       }
 
-      // Create new employee
+      // Thêm nhân viên mới
       const newEmployee = await employeeService.createEmployee(employeeData);
       return res.status(201).json({
         status: 201,
@@ -68,7 +68,7 @@ const employeeController = {
       });
     }
   },
-
+// Cập nhật nhân viên
   updateEmployee: async (req, res) => {
     try {
       const { employeeId } = req.params;
@@ -258,11 +258,11 @@ const employeeController = {
         data: null
       };
     }
-
-    const { deviceId, employeeName, employeeId,department,position,timestamp, status, faceBase64 } = eventData;
+    // Map các trường mới
+    const { deviceId, employeeName, employeeId, department, position, timestamp, status, faceBase64, faceEmbedding, cmd } = eventData;
     return {
       status: 200,
-      data: {deviceId, employeeName, employeeId,department,position,timestamp, status, faceBase64 },
+      data: { deviceId, employeeName, employeeId, department, position, timestamp, status, faceBase64, faceEmbedding, cmd },
       message: 'Data processed successfully'
     };
   },

@@ -7,6 +7,6 @@ module.exports = {
     keepalive: 3600 // 1 hour in seconds
   },
   server: {
-    port: process.env.MQTT_PORT || 1883
+    port: process.env.MQTT_PORT || 8883
   }
 }; 

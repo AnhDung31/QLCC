@@ -19,7 +19,7 @@ import { Calendar as CalendarComponent } from "@/components/ui/calendar"
 import { format } from "date-fns"
 import { vi } from "date-fns/locale"
 import { ExportExcelButton } from "@/components/export-excel-button"
-import { api } from "@/lib/api"
+import api from "@/lib/api"
 
 export function LateEmployeesTable() {
   const { departments, employees } = useEmployees()
